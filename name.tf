@@ -6,5 +6,9 @@ locals {
   log_analytics_workspace-regex_compliant = replace(local.log_analytics_workspace-no_underscore, local.log_analytics_workspace-regex, "")
   log_analytics_workspace-54              = substr(local.log_analytics_workspace-regex_compliant, 0, 54)
   log_analytics_workspace-59              = substr("${local.log_analytics_workspace-54}-${local.unique}", 0, 59)
-  log_analytics_workspace-name          = "${local.log_analytics_workspace-59}-law"
+  log_analytics_workspace-generated_name  = "${local.log_analytics_workspace-59}-law"
+
+  # Optional override: name = "existing-law-name" lets callers pin the name of an
+  # already-deployed workspace whose real name diverges from the generated formula.
+  log_analytics_workspace-name = try(var.logs_analytics_workspace.name, null) != null ? var.logs_analytics_workspace.name : local.log_analytics_workspace-generated_name
 }
